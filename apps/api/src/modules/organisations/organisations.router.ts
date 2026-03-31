@@ -42,7 +42,7 @@ function wrap(fn: (req: Request, res: Response) => Promise<void>) {
 
 // ─── Router ───────────────────────────────────────────────────────────────────
 
-const router = Router()
+const router: Router = Router()
 
 // GET / — scoped list
 router.get('/', authenticate, authorize(Action.READ, Resource.ORGANISATION), wrap(async (req, res) => {

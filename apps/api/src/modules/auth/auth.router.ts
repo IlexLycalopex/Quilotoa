@@ -10,7 +10,7 @@ import { AppError } from '../../middleware/errorHandler.js'
 import { logger } from '../../config/logger.js'
 import { tenantContext } from '../../middleware/tenantContext.js'
 
-const router = Router()
+const router: Router = Router()
 
 const secret = new TextEncoder().encode(env.JWT_SECRET)
 

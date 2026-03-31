@@ -81,7 +81,7 @@ const crudRouter = createCrudRouter({
 
 // createCrudRouter already registered POST /, so we build a fresh outer router
 // and re-implement create here to intercept password hashing.
-const router = Router()
+const router: Router = Router()
 
 function wrap(fn: (req: Request, res: Response) => Promise<void>) {
   return (req: Request, res: Response, next: NextFunction) => fn(req, res).catch(next)

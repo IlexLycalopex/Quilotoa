@@ -7,7 +7,7 @@ import { requireRole } from '../../middleware/rbac.js'
 import { AppError } from '../../middleware/errorHandler.js'
 import { UpdateTenantSchema, Role } from '@msas/shared'
 
-const router = Router()
+const router: Router = Router()
 
 function wrap(fn: (req: Request, res: Response) => Promise<void>) {
   return (req: Request, res: Response, next: NextFunction) => fn(req, res).catch(next)
