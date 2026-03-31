@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { type Application } from 'express'
 import helmet from 'helmet'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
@@ -8,7 +8,7 @@ import { tenantContext } from './middleware/tenantContext.js'
 import { errorHandler } from './middleware/errorHandler.js'
 import { logger } from './config/logger.js'
 
-export function createApp() {
+export function createApp(): Application {
   const app = express()
 
   // ── Security ──────────────────────────────────────────────────────────────

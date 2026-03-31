@@ -56,7 +56,7 @@ router.get('/:id', authenticate, authorize(Action.READ, Resource.ORGANISATION), 
   const [row] = await db
     .select()
     .from(organisations)
-    .where(and(eq(organisations.id, req.params['id']!), eq(organisations.tenantId, req.tenantId)))
+    .where(and(eq(organisations.id, req.params['id'] as string), eq(organisations.tenantId, req.tenantId)))
     .limit(1)
 
   if (!row) throw new AppError(404, 'Organisation not found')
@@ -82,7 +82,7 @@ router.patch('/:id', authenticate, authorize(Action.UPDATE, Resource.ORGANISATIO
   const [updated] = await db
     .update(organisations)
     .set({ ...data, updatedAt: new Date() })
-    .where(and(eq(organisations.id, req.params['id']!), eq(organisations.tenantId, req.tenantId)))
+    .where(and(eq(organisations.id, req.params['id'] as string), eq(organisations.tenantId, req.tenantId)))
     .returning()
 
   if (!updated) throw new AppError(404, 'Organisation not found')
@@ -93,7 +93,7 @@ router.patch('/:id', authenticate, authorize(Action.UPDATE, Resource.ORGANISATIO
 router.delete('/:id', authenticate, authorize(Action.DELETE, Resource.ORGANISATION), wrap(async (req, res) => {
   const [deleted] = await db
     .delete(organisations)
-    .where(and(eq(organisations.id, req.params['id']!), eq(organisations.tenantId, req.tenantId)))
+    .where(and(eq(organisations.id, req.params['id'] as string), eq(organisations.tenantId, req.tenantId)))
     .returning({ id: organisations.id })
 
   if (!deleted) throw new AppError(404, 'Organisation not found')

@@ -10,6 +10,7 @@ import {
   RoiInputsSchema,
   calculateCOI,
   calculateROI,
+  ROI_DEFAULTS,
   Action,
   Resource,
   Stage,
@@ -107,16 +108,16 @@ function extractRoiInputs(model: Record<string, unknown>): RoiInputs | null {
     annualLicenceCost: Number(model['annualLicenceCost']),
     benefitRealisationMonths: model['benefitRealisationMonths'] != null
       ? Number(model['benefitRealisationMonths'])
-      : undefined,
+      : ROI_DEFAULTS.benefitRealisationMonths,
     discountRatePct: model['discountRatePct'] != null
       ? Number(model['discountRatePct'])
-      : undefined,
+      : ROI_DEFAULTS.discountRatePct,
     sensitivityLowMultiplier: model['sensitivityLowMultiplier'] != null
       ? Number(model['sensitivityLowMultiplier'])
-      : undefined,
+      : ROI_DEFAULTS.sensitivityLowMultiplier,
     sensitivityHighMultiplier: model['sensitivityHighMultiplier'] != null
       ? Number(model['sensitivityHighMultiplier'])
-      : undefined,
+      : ROI_DEFAULTS.sensitivityHighMultiplier,
   }
 }
 

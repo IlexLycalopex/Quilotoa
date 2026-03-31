@@ -27,7 +27,7 @@ router.patch('/:id', authenticate, requireRole(Role.ADMIN), wrap(async (req, res
 
   const [updated] = await db.update(tenants)
     .set({ ...data, updatedAt: new Date() })
-    .where(eq(tenants.id, req.params['id']!))
+    .where(eq(tenants.id, req.params['id'] as string))
     .returning()
 
   if (!updated) throw new AppError(404, 'Tenant not found')

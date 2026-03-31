@@ -3,7 +3,6 @@ import { eq, and, or } from 'drizzle-orm'
 import bcrypt from 'bcrypt'
 import { db } from '../../config/db.js'
 import { users } from '../../db/schema.js'
-import { createCrudRouter } from '../../lib/crud.js'
 import { authenticate } from '../../middleware/auth.js'
 import { authorize } from '../../middleware/rbac.js'
 import { AppError } from '../../middleware/errorHandler.js'
@@ -67,20 +66,6 @@ async function listUsers(
     .where(eq(users.tenantId, tenantId))
 }
 
-// ─── CRUD base router ─────────────────────────────────────────────────────────
-
-const crudRouter = createCrudRouter({
-  table: users,
-  resource: Resource.USER,
-  createSchema: CreateUserSchema,
-  updateSchema: UpdateUserSchema,
-  listQuery: listUsers,
-})
-
-// ─── Override POST / to hash password before insert ──────────────────────────
-
-// createCrudRouter already registered POST /, so we build a fresh outer router
-// and re-implement create here to intercept password hashing.
 const router: Router = Router()
 
 function wrap(fn: (req: Request, res: Response) => Promise<void>) {
@@ -138,7 +123,7 @@ router.get('/:id', authenticate, authorize(Action.READ, Resource.USER), wrap(asy
       updatedAt: users.updatedAt,
     })
     .from(users)
-    .where(and(eq(users.id, req.params['id']!), eq(users.tenantId, req.tenantId)))
+    .where(and(eq(users.id, req.params['id'] as string), eq(users.tenantId, req.tenantId)))
     .limit(1)
 
   if (!row) throw new AppError(404, 'User not found')
@@ -176,7 +161,7 @@ router.patch('/:id', authenticate, authorize(Action.UPDATE, Resource.USER), wrap
   const [updated] = await db
     .update(users)
     .set({ ...data, updatedAt: new Date() })
-    .where(and(eq(users.id, req.params['id']!), eq(users.tenantId, req.tenantId)))
+    .where(and(eq(users.id, req.params['id'] as string), eq(users.tenantId, req.tenantId)))
     .returning({
       id:       users.id,
       email:    users.email,
@@ -195,7 +180,7 @@ router.patch('/:id', authenticate, authorize(Action.UPDATE, Resource.USER), wrap
 router.delete('/:id', authenticate, authorize(Action.DELETE, Resource.USER), wrap(async (req, res) => {
   const [deleted] = await db
     .delete(users)
-    .where(and(eq(users.id, req.params['id']!), eq(users.tenantId, req.tenantId)))
+    .where(and(eq(users.id, req.params['id'] as string), eq(users.tenantId, req.tenantId)))
     .returning({ id: users.id })
 
   if (!deleted) throw new AppError(404, 'User not found')
