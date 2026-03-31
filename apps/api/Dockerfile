@@ -4,7 +4,7 @@ WORKDIR /app
 
 # ─── Development ──────────────────────────────────────────────────────────────
 FROM base AS development
-COPY package.json pnpm-lock.yaml* ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/api/package.json ./apps/api/
 COPY packages/shared/package.json ./packages/shared/
 RUN pnpm install
@@ -14,7 +14,7 @@ CMD ["pnpm", "dev"]
 
 # ─── Build ────────────────────────────────────────────────────────────────────
 FROM base AS builder
-COPY package.json pnpm-lock.yaml* ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/api/package.json ./apps/api/
 COPY packages/shared/package.json ./packages/shared/
 RUN pnpm install --frozen-lockfile

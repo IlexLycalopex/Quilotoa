@@ -4,7 +4,7 @@ WORKDIR /app
 
 # ─── Development ──────────────────────────────────────────────────────────────
 FROM base AS development
-COPY package.json pnpm-lock.yaml* ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/web/package.json ./apps/web/
 COPY packages/shared/package.json ./packages/shared/
 RUN pnpm install
@@ -17,7 +17,7 @@ CMD ["pnpm", "dev", "--host"]
 FROM base AS builder
 ARG VITE_API_URL
 ENV VITE_API_URL=$VITE_API_URL
-COPY package.json pnpm-lock.yaml* ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/web/package.json ./apps/web/
 COPY packages/shared/package.json ./packages/shared/
 RUN pnpm install --frozen-lockfile
