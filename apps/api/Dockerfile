@@ -21,16 +21,16 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm --filter @msas/shared build
 RUN pnpm --filter @msas/api build
+# Deploy creates /deploy with prod-only node_modules and workspace deps bundled in
+RUN pnpm --filter @msas/api deploy --prod /deploy
 
 # ─── Production ───────────────────────────────────────────────────────────────
 FROM node:22-alpine AS production
-RUN npm install -g pnpm && addgroup -S msas && adduser -S msas -G msas
+RUN addgroup -S msas && adduser -S msas -G msas
 WORKDIR /app
+COPY --from=builder /deploy/node_modules ./node_modules
 COPY --from=builder /app/apps/api/dist ./dist
 COPY --from=builder /app/apps/api/package.json ./
-COPY --from=builder /app/packages/shared/dist ./node_modules/@msas/shared/dist
-COPY --from=builder /app/packages/shared/package.json ./node_modules/@msas/shared/
-RUN pnpm install --prod --frozen-lockfile
 RUN mkdir -p /app/storage/proposals && chown -R msas:msas /app
 USER msas
 EXPOSE 3001
