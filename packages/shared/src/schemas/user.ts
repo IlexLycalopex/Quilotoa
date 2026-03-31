@@ -32,3 +32,12 @@ export type CreateUserInput = z.infer<typeof CreateUserSchema>
 export type UpdateUserInput = z.infer<typeof UpdateUserSchema>
 export type ChangePasswordInput = z.infer<typeof ChangePasswordSchema>
 export type LoginInput = z.infer<typeof LoginSchema>
+
+export type AuthUser = {
+  id: string
+  email: string
+  fullName: string
+  role: Role
+  tenantId: string
+  teamId: string | null
+}

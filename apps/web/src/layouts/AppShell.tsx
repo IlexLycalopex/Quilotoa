@@ -1,5 +1,5 @@
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Building2, TrendingUp, Settings, LogOut, ChevronRight } from 'lucide-react'
+import { LayoutDashboard, TrendingUp, LogOut, ChevronRight } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
 import { authApi } from '@/api/auth'
 import { Button } from '@/components/ui/button'

@@ -7,6 +7,7 @@ import {
   BantRecordSchema,
   MeddpiccRecordSchema,
   BudgetStatus,
+  Stage,
   evaluateBANT,
   scoreMEDDPICC,
   type BantRecordInput,
@@ -36,7 +37,6 @@ function BantTab({ oppId }: { oppId: string }) {
   const {
     register,
     watch,
-    handleSubmit,
     formState: { errors },
   } = useForm<BantRecordInput>({
     resolver: zodResolver(BantRecordSchema),
@@ -288,7 +288,7 @@ function MeddpiccTab({ oppId, bantPass }: { oppId: string; bantPass: boolean }) 
 
   const advanceMutation = useMutation({
     mutationFn: () =>
-      opportunitiesApi.update(oppId, { stage: 'DISCOVERY' as const }).then((r) => r.data),
+      opportunitiesApi.update(oppId, { stage: Stage.DISCOVERY }).then((r) => r.data),
     onSuccess: () => navigate(`/app/opportunities/${oppId}/discovery`),
   })
 

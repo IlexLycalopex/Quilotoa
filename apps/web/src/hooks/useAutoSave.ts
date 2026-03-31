@@ -1,14 +1,13 @@
 import { useEffect, useRef } from 'react'
-import type { UseFormWatch } from 'react-hook-form'
-import type { UseMutationResult } from '@tanstack/react-query'
+import type { UseFormWatch, FieldValues } from 'react-hook-form'
 
 /**
  * Debounced auto-save hook. Watches form values and fires the mutation
  * after `delay` ms of inactivity. Used across all wizard step forms.
  */
-export function useAutoSave<TData>(
+export function useAutoSave<TData extends FieldValues>(
   watch: UseFormWatch<TData>,
-  mutation: Pick<UseMutationResult<unknown, unknown, TData>, 'mutate'>,
+  mutation: { mutate: (data: unknown) => void },
   delay = 1500,
 ) {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
