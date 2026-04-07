@@ -30,7 +30,7 @@ describe('scoreMEDDPICC', () => {
   it('does not flag warning at exactly 50%', () => {
     // 50% of 80 = 40 raw
     const result = scoreMEDDPICC({ metricsScore: 5, economicBuyerScore: 5, decisionCriteriaScore: 5, decisionProcessScore: 5, paperProcessScore: 5, painScore: 5, championScore: 5, competitionScore: 5 })
-    expect(result.totalPct).toBe(63) // 5*8=40; 40/80=50% → 50 not < 50
+    expect(result.totalPct).toBe(50) // 5*8=40; 40/80=50% → 50 not < 50
     expect(result.isWarning).toBe(false)
   })
 })
