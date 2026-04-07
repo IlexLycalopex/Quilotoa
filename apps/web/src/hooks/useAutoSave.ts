@@ -7,7 +7,8 @@ import type { UseFormWatch, FieldValues } from 'react-hook-form'
  */
 export function useAutoSave<TData extends FieldValues>(
   watch: UseFormWatch<TData>,
-  mutation: { mutate: (data: unknown) => void },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  mutation: { mutate: (data: any) => void },
   delay = 1500,
 ) {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
