@@ -77,6 +77,11 @@ export function RoiPage() {
     mutationFn: (data: Partial<RoiInputs>) => financialApi.putRoi(oppId!, data),
   })
 
+  const proceed = useMutation({
+    mutationFn: (data: Partial<RoiInputs>) => financialApi.putRoi(oppId!, data),
+    onSuccess: () => navigate(`/app/opportunities/${oppId}/proposals`),
+  })
+
   useAutoSave(watch, save)
 
   const values = watch()
@@ -213,10 +218,17 @@ export function RoiPage() {
       </div>
 
       <div className="pt-4 border-t flex items-center justify-between">
-        <p className="text-sm text-muted-foreground">Auto-saving...</p>
-        <Button onClick={() => navigate(`/app/opportunities/${oppId}/proposals`)} disabled={!scenario}>
-          Proceed to Proposals
-        </Button>
+        <p className="text-sm text-muted-foreground">
+          {save.isPending || proceed.isPending ? 'Saving…' : save.isSuccess ? 'Saved' : ''}
+        </p>
+        <div className="flex gap-3">
+          <Button variant="outline" onClick={() => save.mutate(watch())}>
+            Save
+          </Button>
+          <Button onClick={() => proceed.mutate(watch())} disabled={!scenario || proceed.isPending}>
+            {proceed.isPending ? 'Saving…' : 'Proceed to Proposals'}
+          </Button>
+        </div>
       </div>
     </div>
   )

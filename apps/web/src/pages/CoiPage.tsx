@@ -48,6 +48,11 @@ export function CoiPage() {
     mutationFn: (data: Partial<CoiInputs>) => financialApi.putCoi(oppId!, data),
   })
 
+  const proceed = useMutation({
+    mutationFn: (data: Partial<CoiInputs>) => financialApi.putCoi(oppId!, data),
+    onSuccess: () => navigate(`/app/opportunities/${oppId}/roi`),
+  })
+
   useAutoSave(watch, save)
 
   const values = watch()
@@ -132,10 +137,17 @@ export function CoiPage() {
       </div>
 
       <div className="pt-4 border-t flex items-center justify-between">
-        <p className="text-sm text-muted-foreground">Auto-saving...</p>
-        <Button onClick={() => navigate(`/app/opportunities/${oppId}/roi`)} disabled={!coiResult}>
-          Proceed to ROI Builder
-        </Button>
+        <p className="text-sm text-muted-foreground">
+          {save.isPending || proceed.isPending ? 'Saving…' : save.isSuccess ? 'Saved' : ''}
+        </p>
+        <div className="flex gap-3">
+          <Button variant="outline" onClick={() => save.mutate(watch())}>
+            Save
+          </Button>
+          <Button onClick={() => proceed.mutate(watch())} disabled={!coiResult || proceed.isPending}>
+            {proceed.isPending ? 'Saving…' : 'Proceed to ROI Builder'}
+          </Button>
+        </div>
       </div>
     </div>
   )
