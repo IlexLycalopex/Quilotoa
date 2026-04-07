@@ -12,17 +12,22 @@ export function useAutoSave<TData extends FieldValues>(
   delay = 1500,
 ) {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  // Stable ref so the effect doesn't re-subscribe on every render
+  const mutationRef = useRef(mutation)
+  mutationRef.current = mutation
 
   useEffect(() => {
     const subscription = watch((values) => {
       if (timerRef.current) clearTimeout(timerRef.current)
       timerRef.current = setTimeout(() => {
-        mutation.mutate(values as TData)
+        mutationRef.current.mutate(values as TData)
       }, delay)
     })
     return () => {
       subscription.unsubscribe()
       if (timerRef.current) clearTimeout(timerRef.current)
     }
-  }, [watch, mutation, delay])
+  // watch and delay are stable; mutationRef never changes identity
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watch, delay])
 }

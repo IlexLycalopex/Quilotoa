@@ -176,9 +176,14 @@ function BantTab({ oppId }: { oppId: string }) {
           <Input id="timelineDate" type="date" {...register('timelineDate')} />
         </div>
 
-        {saveMutation.isPending && (
-          <p className="text-xs text-muted-foreground">Saving…</p>
-        )}
+        <div className="flex items-center justify-between pt-2">
+          <p className="text-xs text-muted-foreground">
+            {saveMutation.isPending ? 'Saving…' : saveMutation.isSuccess ? 'Saved' : ''}
+          </p>
+          <Button type="button" onClick={() => saveMutation.mutate(watch())}>
+            Save
+          </Button>
+        </div>
       </form>
     </div>
   )
@@ -418,9 +423,14 @@ function MeddpiccTab({ oppId, bantPass }: { oppId: string; bantPass: boolean }) 
         ))}
       </div>
 
-      {saveMutation.isPending && (
-        <p className="text-xs text-muted-foreground">Saving…</p>
-      )}
+      <div className="flex items-center justify-between pt-2">
+        <p className="text-xs text-muted-foreground">
+          {saveMutation.isPending ? 'Saving…' : saveMutation.isSuccess ? 'Saved' : ''}
+        </p>
+        <Button type="button" onClick={() => saveMutation.mutate(watch())}>
+          Save
+        </Button>
+      </div>
 
       {/* Proceed button */}
       <div className="flex justify-end pt-2">
