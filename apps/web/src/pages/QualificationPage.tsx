@@ -8,7 +8,6 @@ import {
   MeddpiccRecordSchema,
   BudgetStatus,
   Stage,
-  evaluateBANT,
   scoreMEDDPICC,
   type BantRecordInput,
   type MeddpiccRecordInput,
@@ -30,7 +29,7 @@ import { cn } from '@/lib/utils'
 
 function BantTab({ oppId }: { oppId: string }) {
   const queryClient = useQueryClient()
-  const { data: savedBant, isLoading } = useQuery<BantRecordInput>({
+  const { data: savedBant, isLoading } = useQuery<BantRecordInput & { pass?: boolean }>({
     queryKey: ['bant', oppId],
     queryFn: () => qualificationApi.getBant(oppId).then((r) => r.data),
   })
@@ -56,15 +55,7 @@ function BantTab({ oppId }: { oppId: string }) {
 
   useAutoSave(watch, saveMutation)
 
-  const values = watch()
-  const bantPass = (() => {
-    try {
-      const parsed = BantRecordSchema.safeParse(values)
-      return parsed.success ? evaluateBANT(parsed.data) : false
-    } catch {
-      return false
-    }
-  })()
+  const bantPass = savedBant?.pass ?? false
   const authorityIdentified = watch('authorityIdentified')
 
   if (isLoading) return <div className="p-4 text-muted-foreground">Loading BANT data…</div>
@@ -547,20 +538,13 @@ export function QualificationPage() {
   const [activeTab, setActiveTab] = useState<'bant' | 'meddpicc'>('bant')
 
   // We need bantPass to gate the MEDDPICC proceed button
-  const { data: savedBant } = useQuery<BantRecordInput>({
+  // The GET response includes the server-computed `pass` field — use it directly
+  const { data: savedBant } = useQuery<BantRecordInput & { pass?: boolean }>({
     queryKey: ['bant', oppId],
     queryFn: () => qualificationApi.getBant(oppId).then((r) => r.data),
   })
 
-  const bantPass = (() => {
-    if (!savedBant) return false
-    try {
-      const parsed = BantRecordSchema.safeParse(savedBant)
-      return parsed.success ? evaluateBANT(parsed.data) : false
-    } catch {
-      return false
-    }
-  })()
+  const bantPass = savedBant?.pass ?? false
 
   return (
     <div className="space-y-6">
