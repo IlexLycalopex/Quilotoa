@@ -6,9 +6,9 @@ import { BudgetStatus } from '../enums.js'
 export const BantRecordSchema = z.object({
   budgetStatus: z.nativeEnum(BudgetStatus),
   authorityIdentified: z.coerce.boolean(),
-  authorityRole: z.string().max(255).optional(),
+  authorityRole: z.string().max(255).nullish(),
   needStatement: z.string().min(1, 'Pain statement is required'),
-  needCategory: z.string().max(100).optional(),
+  needCategory: z.string().max(100).nullish(),
   // Empty string from an unfilled date input must be normalised to undefined
   timelineDate: z.preprocess(
     (v) => (v === '' ? undefined : v),
@@ -20,28 +20,30 @@ export type BantRecordInput = z.infer<typeof BantRecordSchema>
 
 // ─── MEDDPICC ────────────────────────────────────────────────────────────────
 
-const scoreField = z.number().int().min(0).max(10)
+// coerce handles HTML range inputs returning strings; nullish handles DB nulls
+const scoreField = z.coerce.number().int().min(0).max(10)
+const optStr = (max: number) => z.string().max(max).nullish()
 
 export const MeddpiccRecordSchema = z.object({
   metricsScore: scoreField,
-  metricsNotes: z.string().max(2000).optional(),
+  metricsNotes: optStr(2000),
   economicBuyerScore: scoreField,
-  economicBuyerName: z.string().max(255).optional(),
-  economicBuyerRole: z.string().max(255).optional(),
-  economicBuyerEngagement: z.string().max(100).optional(),
+  economicBuyerName: optStr(255),
+  economicBuyerRole: optStr(255),
+  economicBuyerEngagement: optStr(100),
   decisionCriteriaScore: scoreField,
-  decisionCriteriaNotes: z.string().max(2000).optional(),
+  decisionCriteriaNotes: optStr(2000),
   decisionProcessScore: scoreField,
-  decisionProcessNotes: z.string().max(2000).optional(),
+  decisionProcessNotes: optStr(2000),
   paperProcessScore: scoreField,
-  paperProcessNotes: z.string().max(2000).optional(),
+  paperProcessNotes: optStr(2000),
   painScore: scoreField,
-  painNotes: z.string().max(2000).optional(),
+  painNotes: optStr(2000),
   championScore: scoreField,
-  championName: z.string().max(255).optional(),
-  championRole: z.string().max(255).optional(),
+  championName: optStr(255),
+  championRole: optStr(255),
   competitionScore: scoreField,
-  competitionNotes: z.string().max(2000).optional(),
+  competitionNotes: optStr(2000),
 })
 
 export type MeddpiccRecordInput = z.infer<typeof MeddpiccRecordSchema>
