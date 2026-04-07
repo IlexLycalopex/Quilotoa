@@ -42,16 +42,6 @@ router.get(
     const { id: userId, teamId } = req.user!
     const tenantId = req.tenantId
 
-    // Alias columns for the join
-    const ownerUsers = db
-      .select({
-        id:       users.id,
-        fullName: users.fullName,
-        teamId:   users.teamId,
-      })
-      .from(users)
-      .as('owner')
-
     // Build the base query with joins
     const baseQuery = db
       .select({
