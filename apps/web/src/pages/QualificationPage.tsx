@@ -191,11 +191,14 @@ function BantTab({ oppId }: { oppId: string }) {
 
 // ─── MEDDPICC Element Row ─────────────────────────────────────────────────────
 
+interface ScoreAnchors { low: string; mid: string; high: string }
+
 interface MeddpiccElementProps {
   label: string
   scoreKey: keyof MeddpiccRecordInput
   notesKey?: keyof MeddpiccRecordInput
   extraFields?: Array<{ key: keyof MeddpiccRecordInput; label: string; placeholder?: string }>
+  anchors: ScoreAnchors
   currentScore: number
   register: ReturnType<typeof useForm<MeddpiccRecordInput>>['register']
   watch: ReturnType<typeof useForm<MeddpiccRecordInput>>['watch']
@@ -206,6 +209,7 @@ function MeddpiccElement({
   scoreKey,
   notesKey,
   extraFields,
+  anchors,
   currentScore,
   register,
 }: MeddpiccElementProps) {
@@ -233,6 +237,18 @@ function MeddpiccElement({
           className="w-full accent-primary"
           {...register(scoreKey, { valueAsNumber: true })}
         />
+        {/* Score anchors */}
+        <div className="grid grid-cols-3 gap-1 pt-1">
+          <div className={cn('text-xs rounded px-2 py-1 text-left', currentScore <= 3 ? 'bg-red-50 text-red-700 font-medium' : 'text-muted-foreground')}>
+            <span className="block font-semibold">0–3</span>{anchors.low}
+          </div>
+          <div className={cn('text-xs rounded px-2 py-1 text-center', currentScore >= 4 && currentScore <= 6 ? 'bg-amber-50 text-amber-700 font-medium' : 'text-muted-foreground')}>
+            <span className="block font-semibold">4–6</span>{anchors.mid}
+          </div>
+          <div className={cn('text-xs rounded px-2 py-1 text-right', currentScore >= 7 ? 'bg-green-50 text-green-700 font-medium' : 'text-muted-foreground')}>
+            <span className="block font-semibold">7–10</span>{anchors.high}
+          </div>
+        </div>
       </div>
 
       {/* Extra named fields */}
@@ -319,6 +335,11 @@ function MeddpiccTab({ oppId, bantPass }: { oppId: string; bantPass: boolean }) 
       label: 'M — Metrics',
       scoreKey: 'metricsScore',
       notesKey: 'metricsNotes',
+      anchors: {
+        low: 'No quantified value defined',
+        mid: 'Some metrics identified, not agreed',
+        high: 'ROI / payback agreed with EB',
+      },
       currentScore: scoreResult.elementScores.metrics,
       register,
       watch,
@@ -327,6 +348,11 @@ function MeddpiccTab({ oppId, bantPass }: { oppId: string; bantPass: boolean }) 
       label: 'E — Economic Buyer',
       scoreKey: 'economicBuyerScore',
       notesKey: undefined,
+      anchors: {
+        low: 'Not identified',
+        mid: 'Identified, not yet engaged',
+        high: 'Engaged, supportive, accessible',
+      },
       extraFields: [
         { key: 'economicBuyerName', label: 'Name', placeholder: 'e.g. Jane Smith' },
         { key: 'economicBuyerRole', label: 'Role / title', placeholder: 'e.g. CFO' },
@@ -340,6 +366,11 @@ function MeddpiccTab({ oppId, bantPass }: { oppId: string; bantPass: boolean }) 
       label: 'D — Decision Criteria',
       scoreKey: 'decisionCriteriaScore',
       notesKey: 'decisionCriteriaNotes',
+      anchors: {
+        low: 'Criteria unknown',
+        mid: 'Partially known, not formalised',
+        high: 'Fully understood, we map well',
+      },
       currentScore: scoreResult.elementScores.decisionCriteria,
       register,
       watch,
@@ -348,6 +379,11 @@ function MeddpiccTab({ oppId, bantPass }: { oppId: string; bantPass: boolean }) 
       label: 'D — Decision Process',
       scoreKey: 'decisionProcessScore',
       notesKey: 'decisionProcessNotes',
+      anchors: {
+        low: 'Process unknown',
+        mid: 'High-level steps known',
+        high: 'Every step mapped, we\'re involved',
+      },
       currentScore: scoreResult.elementScores.decisionProcess,
       register,
       watch,
@@ -356,6 +392,11 @@ function MeddpiccTab({ oppId, bantPass }: { oppId: string; bantPass: boolean }) 
       label: 'P — Paper Process',
       scoreKey: 'paperProcessScore',
       notesKey: 'paperProcessNotes',
+      anchors: {
+        low: 'Not discussed',
+        mid: 'Procurement aware, timeline unclear',
+        high: 'Contract route & timeline confirmed',
+      },
       currentScore: scoreResult.elementScores.paperProcess,
       register,
       watch,
@@ -364,6 +405,11 @@ function MeddpiccTab({ oppId, bantPass }: { oppId: string; bantPass: boolean }) 
       label: 'I — (Identified) Pain',
       scoreKey: 'painScore',
       notesKey: 'painNotes',
+      anchors: {
+        low: 'No pain articulated',
+        mid: 'Pain acknowledged, impact unclear',
+        high: 'Pain quantified, agreed by EB',
+      },
       currentScore: scoreResult.elementScores.pain,
       register,
       watch,
@@ -372,6 +418,11 @@ function MeddpiccTab({ oppId, bantPass }: { oppId: string; bantPass: boolean }) 
       label: 'C — Champion',
       scoreKey: 'championScore',
       notesKey: undefined,
+      anchors: {
+        low: 'No internal advocate',
+        mid: 'Supporter identified, limited influence',
+        high: 'Active champion, selling internally',
+      },
       extraFields: [
         { key: 'championName', label: 'Champion name', placeholder: 'e.g. John Doe' },
         { key: 'championRole', label: 'Champion role', placeholder: 'e.g. IT Director' },
@@ -384,6 +435,11 @@ function MeddpiccTab({ oppId, bantPass }: { oppId: string; bantPass: boolean }) 
       label: 'C — Competition',
       scoreKey: 'competitionScore',
       notesKey: 'competitionNotes',
+      anchors: {
+        low: 'Competitors unknown',
+        mid: 'Competitors known, our position unclear',
+        high: 'Differentiators agreed, we\'re preferred',
+      },
       currentScore: scoreResult.elementScores.competition,
       register,
       watch,
