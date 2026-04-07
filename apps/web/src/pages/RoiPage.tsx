@@ -5,11 +5,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, ReferenceLine } from 'recharts'
 import { financialApi } from '@/api/financial'
+import { opportunitiesApi } from '@/api/opportunities'
 import { useAutoSave } from '@/hooks/useAutoSave'
 import { FinancialInputRow } from '@/components/shared/FinancialInputRow'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { calculateROI, RoiInputsSchema, ROI_DEFAULTS, type RoiInputs, type RoiScenario } from '@msas/shared'
+import { calculateROI, RoiInputsSchema, ROI_DEFAULTS, Stage, type RoiInputs, type RoiScenario } from '@msas/shared'
 import { formatCurrency, formatPct, formatMonths } from '@/lib/utils'
 
 type Scenario = 'low' | 'base' | 'high'
@@ -78,7 +79,10 @@ export function RoiPage() {
   })
 
   const proceed = useMutation({
-    mutationFn: (data: Partial<RoiInputs>) => financialApi.putRoi(oppId!, data),
+    mutationFn: async (data: Partial<RoiInputs>) => {
+      await financialApi.putRoi(oppId!, data)
+      await opportunitiesApi.update(oppId!, { stage: Stage.COMPLETE })
+    },
     onSuccess: () => navigate(`/app/opportunities/${oppId}/proposals`),
   })
 
