@@ -1,12 +1,13 @@
 import { useState, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import {
   DiscoveryDatasetSchema,
   type DiscoveryDatasetInput,
   Solution,
+  Stage,
   ProductionModel,
   MigrationScope,
   ItReadiness,
@@ -421,6 +422,7 @@ function SectionCard({
 export function DiscoveryPage() {
   const { id } = useParams<{ id: string }>()
   const oppId = id!
+  const navigate = useNavigate()
   const [manuallyExpanded, setManuallyExpanded] = useState<Set<string>>(new Set())
   const [solutionConfirmed, setSolutionConfirmed] = useState(false)
   const [showOverrideForm, setShowOverrideForm] = useState(false)
@@ -448,6 +450,12 @@ export function DiscoveryPage() {
     mutationFn: (data: { solution: Solution; solutionOverrideReason?: string }) =>
       opportunitiesApi.update(oppId, data).then((r) => r.data),
     onSuccess: () => setSolutionConfirmed(true),
+  })
+
+  const advanceMutation = useMutation({
+    mutationFn: () =>
+      opportunitiesApi.update(oppId, { stage: Stage.COI }).then((r) => r.data),
+    onSuccess: () => navigate(`/app/opportunities/${oppId}/coi`),
   })
 
   useAutoSave(watch, saveMutation)
@@ -496,7 +504,30 @@ export function DiscoveryPage() {
         </div>
       </div>
 
-      {/* Solution recommendation card */}
+      {/* Sections */}
+      <div className="space-y-3">
+        {SECTION_REGISTRY.map((section) => {
+          const isVisible = section.visibleWhen
+            ? section.visibleWhen(activeSolution, values)
+            : true
+          const isManuallyExp = manuallyExpanded.has(section.key)
+
+          return (
+            <SectionCard
+              key={section.key}
+              section={section}
+              isVisible={isVisible}
+              isManuallyExpanded={isManuallyExp}
+              onToggleManual={() => toggleManualExpand(section.key)}
+              register={register}
+              watch={watch}
+              setValue={setValue}
+            />
+          )
+        })}
+      </div>
+
+      {/* Solution recommendation card — shown after sections once enough data exists */}
       {recommendation && (
         <Card className="border-primary/30 bg-primary/5">
           <CardHeader className="pb-3">
@@ -537,21 +568,13 @@ export function DiscoveryPage() {
                 >
                   {confirmSolutionMutation.isPending ? 'Confirming…' : 'Confirm Solution'}
                 </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => setShowOverrideForm(!showOverrideForm)}
-                >
+                <Button size="sm" variant="outline" onClick={() => setShowOverrideForm(!showOverrideForm)}>
                   Override
                 </Button>
               </div>
             )}
             {(solutionConfirmed || confirmedSolution) && !showOverrideForm && (
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() => setShowOverrideForm(true)}
-              >
+              <Button size="sm" variant="ghost" onClick={() => setShowOverrideForm(true)}>
                 Override confirmed solution
               </Button>
             )}
@@ -569,31 +592,28 @@ export function DiscoveryPage() {
         </Card>
       )}
 
-      {/* Sections */}
-      <div className="space-y-3">
-        {SECTION_REGISTRY.map((section) => {
-          const isVisible = section.visibleWhen
-            ? section.visibleWhen(activeSolution, values)
-            : true
-          const isManuallyExp = manuallyExpanded.has(section.key)
-
-          return (
-            <SectionCard
-              key={section.key}
-              section={section}
-              isVisible={isVisible}
-              isManuallyExpanded={isManuallyExp}
-              onToggleManual={() => toggleManualExpand(section.key)}
-              register={register}
-              watch={watch}
-              setValue={setValue}
-            />
-          )
-        })}
+      {/* Save + Proceed */}
+      <div className="flex items-center justify-between pt-2">
+        <p className="text-xs text-muted-foreground">
+          {saveMutation.isPending ? 'Saving…' : saveMutation.isSuccess ? 'Saved' : ''}
+        </p>
+        <div className="flex gap-3">
+          <Button variant="outline" onClick={() => saveMutation.mutate(watch())}>
+            Save
+          </Button>
+          <Button
+            onClick={() => advanceMutation.mutate()}
+            disabled={(!solutionConfirmed && !confirmedSolution) || advanceMutation.isPending}
+            title={!solutionConfirmed && !confirmedSolution ? 'Confirm a solution to proceed' : undefined}
+          >
+            {advanceMutation.isPending ? 'Advancing…' : 'Proceed to COI'}
+          </Button>
+        </div>
       </div>
-
-      {saveMutation.isPending && (
-        <p className="text-xs text-muted-foreground">Saving…</p>
+      {!solutionConfirmed && !confirmedSolution && (
+        <p className="text-xs text-muted-foreground text-right">
+          Confirm the solution recommendation to unlock Proceed to COI.
+        </p>
       )}
     </div>
   )
