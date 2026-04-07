@@ -31,6 +31,7 @@ WORKDIR /app
 COPY --from=builder /deploy/node_modules ./node_modules
 COPY --from=builder /app/apps/api/dist ./dist
 COPY --from=builder /app/apps/api/package.json ./
+COPY --from=builder /app/apps/api/src/db/migrations ./src/db/migrations
 RUN mkdir -p /app/storage/proposals && chown -R msas:msas /app
 USER msas
 EXPOSE 3001
