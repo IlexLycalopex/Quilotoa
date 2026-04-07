@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useParams, useNavigate } from 'react-router-dom'
-import { useQuery, useMutation } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   BantRecordSchema,
   MeddpiccRecordSchema,
@@ -29,6 +29,7 @@ import { cn } from '@/lib/utils'
 // ─── BANT Tab ────────────────────────────────────────────────────────────────
 
 function BantTab({ oppId }: { oppId: string }) {
+  const queryClient = useQueryClient()
   const { data: savedBant, isLoading } = useQuery<BantRecordInput>({
     queryKey: ['bant', oppId],
     queryFn: () => qualificationApi.getBant(oppId).then((r) => r.data),
@@ -50,6 +51,7 @@ function BantTab({ oppId }: { oppId: string }) {
 
   const saveMutation = useMutation({
     mutationFn: (data: BantRecordInput) => qualificationApi.putBant(oppId, data),
+    onSuccess: () => { void queryClient.invalidateQueries({ queryKey: ['bant', oppId] }) },
   })
 
   useAutoSave(watch, saveMutation)
