@@ -27,7 +27,5 @@ export function useAutoSave<TData extends FieldValues>(
       subscription.unsubscribe()
       if (timerRef.current) clearTimeout(timerRef.current)
     }
-  // watch and delay are stable; mutationRef never changes identity
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watch, delay])
 }
