@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Quilotoa">
+  <defs>
+    <radialGradient id="q-lake" cx="42%" cy="36%" r="72%">
+      <stop offset="0%" stop-color="#7FB0C4" stop-opacity="0.42"/>
+      <stop offset="60%" stop-color="#2C5566" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#0B1A23" stop-opacity="0.85"/>
+    </radialGradient>
+    <radialGradient id="q-halo" cx="50%" cy="50%" r="50%">
+      <stop offset="55%" stop-color="#F0A73A" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#F0A73A" stop-opacity="0.13"/>
+    </radialGradient>
+  </defs>
+  <circle cx="60" cy="60" r="56" fill="url(#q-halo)"/>
+  <circle cx="60" cy="60" r="50" fill="none" stroke="#F0A73A" stroke-opacity="0.88"
+          stroke-width="1.6" stroke-linecap="round"
+          stroke-dasharray="126 16 108 24 40 0" transform="rotate(-24 60 60)"/>
+  <circle cx="60" cy="60" r="41" fill="none" stroke="#F0A73A" stroke-opacity="0.22" stroke-width="0.9"/>
+  <ellipse cx="61" cy="62" rx="29" ry="27.5" fill="url(#q-lake)" stroke="#7FB0C4"
+           stroke-opacity="0.5" stroke-width="1"/>
+  <path d="M40 66 q12 -7 22 -1 t20 -3" fill="none" stroke="#7FB0C4" stroke-opacity="0.34"
+        stroke-width="0.9" stroke-linecap="round"/>
+</svg>
