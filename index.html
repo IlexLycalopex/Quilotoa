@@ -20,10 +20,11 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-512.png" sizes="512x512" type="image/png">
 
+<link rel="preload" href="quilotoa-icon.png" as="image">
 <link rel="preload" href="fonts/jost-latin.woff2" as="font" type="font/woff2" crossorigin>
 
 <style>
@@ -170,31 +171,8 @@
   <div class="q-glow" aria-hidden="true"></div>
 
   <div class="q-lockup">
-    <!-- Placeholder crater mark. To use the real artwork, drop quilotoa-icon.png in the
-         repo root and replace this <svg> block with:
-         <img class="q-mark" src="quilotoa-icon.png" alt=""> -->
-    <svg class="q-mark" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
-      <defs>
-        <radialGradient id="q-lake" cx="42%" cy="36%" r="72%">
-          <stop offset="0%" stop-color="#7FB0C4" stop-opacity="0.42"/>
-          <stop offset="60%" stop-color="#2C5566" stop-opacity="0.30"/>
-          <stop offset="100%" stop-color="#0B1A23" stop-opacity="0.85"/>
-        </radialGradient>
-        <radialGradient id="q-halo" cx="50%" cy="50%" r="50%">
-          <stop offset="55%" stop-color="#F0A73A" stop-opacity="0"/>
-          <stop offset="100%" stop-color="#F0A73A" stop-opacity="0.13"/>
-        </radialGradient>
-      </defs>
-      <circle cx="60" cy="60" r="56" fill="url(#q-halo)"/>
-      <circle cx="60" cy="60" r="50" fill="none" stroke="#F0A73A" stroke-opacity="0.88"
-              stroke-width="1.6" stroke-linecap="round"
-              stroke-dasharray="126 16 108 24 40 0" transform="rotate(-24 60 60)"/>
-      <circle cx="60" cy="60" r="41" fill="none" stroke="#F0A73A" stroke-opacity="0.22" stroke-width="0.9"/>
-      <ellipse cx="61" cy="62" rx="29" ry="27.5" fill="url(#q-lake)" stroke="#7FB0C4"
-               stroke-opacity="0.5" stroke-width="1"/>
-      <path d="M40 66 q12 -7 22 -1 t20 -3" fill="none" stroke="#7FB0C4" stroke-opacity="0.34"
-            stroke-width="0.9" stroke-linecap="round"/>
-    </svg>
+    <img class="q-mark" src="quilotoa-icon.png" width="322" height="280" alt=""
+         fetchpriority="high" decoding="async">
     <h1 class="q-wordmark">Quilotoa</h1>
   </div>
 

@@ -11,11 +11,10 @@ No build step, no dependencies. Everything in the repo root is published as-is.
 | `index.html` | The landing page. All CSS and the brand mark are inline, so the page is a single request. |
 | `404.html` | Branded not-found page. GitHub Pages picks this up automatically. |
 | `fonts/` | Jost, self-hosted (SIL Open Font License 1.1). Latin and Latin-Extended subsets, variable 300-400. |
-| `quilotoa-mark.svg` | Canonical brand mark. The page inlines a copy of this to avoid a second request; edit both together. |
-| `favicon.svg` | Simplified mark for favicon use, legible at 16px. |
-| `favicon-32.png`, `apple-touch-icon.png`, `icon-512.png` | Raster icons generated from `favicon.svg`. |
+| `quilotoa-icon.png` | The brand mark, and the source every other image is generated from. Replace this one file and rebuild. |
+| `favicon-32.png`, `apple-touch-icon.png`, `icon-512.png` | Raster icons, mark on the brand dark ground. |
 | `og-image.png` | 1200x630 social share card. |
-| `tools/og-card.html` | Source layout for the share card. |
+| `tools/og-card.html`, `tools/icon.html` | Source layouts for the card and the icons. |
 | `tools/build-assets.mjs` | Regenerates the PNGs above. |
 | `CNAME` | Custom domain for GitHub Pages. |
 | `.nojekyll` | Skips Jekyll processing; files are served verbatim. |
@@ -68,12 +67,18 @@ python3 -m http.server 8899 &
 node tools/build-assets.mjs
 ```
 
-Needs Playwright's Chromium. Run this after any change to `favicon.svg` or
-`tools/og-card.html`.
+Needs Playwright's Chromium. Run this after replacing `quilotoa-icon.png` or
+editing either layout in `tools/`.
+
+The icons put the mark on the brand dark ground (`#0B1A23`). The mark was drawn
+for light backgrounds, so at 16-32px the peaks lose some separation from the
+ground while the sun and lake still carry recognition. If tab legibility ever
+matters more than theme consistency, change the `background` in
+`tools/icon.html` to `#F4F7F8` and rebuild.
 
 ## Outstanding
 
-- `quilotoa-icon.png` referenced by the original design was not supplied. The
-  page ships a placeholder crater mark; see the comment in `index.html` for the
-  one-line swap once the real artwork exists.
+- `quilotoa-icon.png` is 322x280. The page draws it 156px wide, which is fine
+  at 1x and 2x but below native density on 3x phone screens. A larger export,
+  or an SVG of the mark, would render sharper at no extra weight.
 - The meta description and Open Graph copy are placeholders pending positioning.
